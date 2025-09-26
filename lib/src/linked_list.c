@@ -1,0 +1,105 @@
+#include "linked_list.h"
+#include <stddef.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+static Mem_Info *head = NULL;
+static Mem_Info *tail = NULL;
+
+
+
+int check_memory_leak(){
+    if(head || tail){
+        return 1;
+    }
+
+    return 0;
+}
+
+
+
+void print_allocation(){
+
+    Mem_Info *current = head;
+
+    printf("\nAllocation Information\n");
+    while(current){
+        printf("Address %p - Line %d - File %s\n", current->ptr, current->file_line, current->file_name);
+        current = current->next;
+    }
+
+
+}
+
+
+void append_allocation(void *ptr, char *file, int line){
+    Mem_Info *node = malloc(sizeof(Mem_Info));
+    node->ptr = ptr;
+    node->file_name = strdup(file);
+    node->file_line = line;
+
+    if(tail){
+
+        tail->next = node;
+        node->prev = tail;
+
+        tail = node;
+        tail->next = NULL;
+        return;
+    }
+
+    if(!head){
+
+        head = node;
+        head->next = NULL;
+        head->prev = NULL;
+        tail = head;
+        return;
+    }
+}
+
+
+int delete_allocation(void *check_ptr){
+    Mem_Info *current = head;
+
+    while(current){
+
+        if(current->ptr == check_ptr){
+            break;
+        }
+        current = current->next;
+
+    }
+
+    if(!current){
+        return 1;
+    }
+
+    if(current->next && current->prev){ // not head, not tail
+
+        current->prev->next = current->next;
+        current->next->prev = current->prev;
+    
+    } else if(current->next && !current->prev){ // head, not tail
+
+        head = current->next;
+        current->next->prev = NULL;
+
+    } else if(!current->next && current->prev){ // not head, tail
+
+        current->prev->next = NULL;
+        tail = current->prev;
+
+    } else{ // one node
+
+        head = NULL;
+        tail = NULL;
+
+    }
+    
+    free(current->file_name);
+    free(current);
+
+    return 0;
+}
