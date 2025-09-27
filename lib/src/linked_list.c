@@ -10,6 +10,7 @@ static Mem_Info *tail = NULL;
 
 
 int check_memory_leak(){
+    
     if(head || tail){
         return 1;
     }
@@ -42,8 +43,6 @@ void append_allocation(void *ptr, char *file, int line){
     if(tail){
 
         tail->next = node;
-        node->prev = tail;
-
         tail = node;
         tail->next = NULL;
         return;
@@ -53,7 +52,6 @@ void append_allocation(void *ptr, char *file, int line){
 
         head = node;
         head->next = NULL;
-        head->prev = NULL;
         tail = head;
         return;
     }
@@ -62,12 +60,11 @@ void append_allocation(void *ptr, char *file, int line){
 
 int delete_allocation(void *check_ptr){
     Mem_Info *current = head;
+    Mem_Info *prev = NULL;
 
-    while(current){
+    while(current && current->ptr == check_ptr){
 
-        if(current->ptr == check_ptr){
-            break;
-        }
+        prev = current;
         current = current->next;
 
     }
@@ -76,20 +73,18 @@ int delete_allocation(void *check_ptr){
         return 1;
     }
 
-    if(current->next && current->prev){ // not head, not tail
+    if(current->next && prev){ // not head, not tail
 
-        current->prev->next = current->next;
-        current->next->prev = current->prev;
+        prev->next = current->next;
     
-    } else if(current->next && !current->prev){ // head, not tail
+    } else if(current->next && !prev){ // head, not tail
 
         head = current->next;
-        current->next->prev = NULL;
 
-    } else if(!current->next && current->prev){ // not head, tail
+    } else if(!current->next && prev){ // not head, tail
 
-        current->prev->next = NULL;
-        tail = current->prev;
+        prev->next = NULL;
+        tail = prev;
 
     } else{ // one node
 

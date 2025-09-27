@@ -3,15 +3,15 @@
 #ifndef MEMSAFE_H
 #define MEMSAFE_H
 
-
+#include "export.h"
 #include "linked_list.h"
 #include <string.h>
 #include <stdlib.h>
 
-void debug_free(void *memory);
-void* debug_malloc(size_t size, char *file, int line);
-void* debug_realloc(void *mem, size_t size, char *file, int line);
-char* debug_strdup(const char* src, char *file, int line);
+MemSafe_API void debug_free(void *memory);
+MemSafe_API void* debug_malloc(size_t size, char *file, int line);
+MemSafe_API void* debug_realloc(void *mem, size_t size, char *file, int line);
+MemSafe_API char* debug_strdup(const char* src, char *file, int line);
 
 
 
