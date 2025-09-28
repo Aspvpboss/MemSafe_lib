@@ -1,10 +1,11 @@
 #ifndef EXPORT_H
 #define EXPORT_H
 
+
 #ifdef _WIN32
-    #ifdef MemSafe_EXPORTS
+    #ifdef DLL_EXPORTS
         #define MemSafe_API __declspec(dllexport)
-    #elif defined(Normal_Run)
+    #elif defined(STATIC_LINK)
         #define MemSafe_API
     #else 
         #define MemSafe_API __declspec(dllimport)
@@ -12,5 +13,6 @@
 #else
     #define MemSafe_API
 #endif
+
 
 #endif

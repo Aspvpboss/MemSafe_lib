@@ -1,4 +1,4 @@
-#include "linked_list.h"
+#include "MemTrack_linked_list.h"
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
@@ -8,34 +8,65 @@ static Mem_Info *head = NULL;
 static Mem_Info *tail = NULL;
 
 
+void free_tracking_info(){
+    Mem_Info *current = head;
+    Mem_Info *next = NULL;
+
+    while(current){
+        next = current->next;
+        free(current->file_name);
+        free(current);
+        current = next;
+    }
+
+    head = NULL;
+    tail = NULL;
+}
+
+
+
+size_t check_memory_usage(){
+    Mem_Info *current = head;
+    size_t total = 0;
+
+    while(current){
+        total += current->size;
+        current = current->next;
+    }
+
+    return total;
+}
+
 
 int check_memory_leak(){
-    
-    if(head || tail){
+
+    if(head || tail)
         return 1;
-    }
 
     return 0;
 }
 
 
 
-void print_allocation(){
+void print_tracking_info(){
 
     Mem_Info *current = head;
 
     printf("\nAllocation Information\n");
     while(current){
-        printf("Address %p - Line %d - File %s\n", current->ptr, current->file_line, current->file_name);
+        printf("Address %p - size %lld - Line %d - File %s\n", current->ptr, current->size, current->file_line, current->file_name);
         current = current->next;
     }
-
+    printf("\n");
 
 }
 
 
-void append_allocation(void *ptr, char *file, int line){
+int append_allocation(void *ptr, char *file, int line, size_t size){
     Mem_Info *node = malloc(sizeof(Mem_Info));
+    if(!node)
+        return 1;
+    node->size = size;
     node->ptr = ptr;
     node->file_name = strdup(file);
     node->file_line = line;
@@ -45,7 +76,7 @@ void append_allocation(void *ptr, char *file, int line){
         tail->next = node;
         tail = node;
         tail->next = NULL;
-        return;
+        return 0;
     }
 
     if(!head){
@@ -53,8 +84,10 @@ void append_allocation(void *ptr, char *file, int line){
         head = node;
         head->next = NULL;
         tail = head;
-        return;
+        return 0;
     }
+
+    return 1;
 }
 
 
@@ -62,7 +95,7 @@ int delete_allocation(void *check_ptr){
     Mem_Info *current = head;
     Mem_Info *prev = NULL;
 
-    while(current && current->ptr == check_ptr){
+    while(current && current->ptr != check_ptr){
 
         prev = current;
         current = current->next;

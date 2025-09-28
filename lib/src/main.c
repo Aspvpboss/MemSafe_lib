@@ -1,32 +1,22 @@
 #define TRACK_ALLOCATIONS
 
-#include "MemSafe.h"
+#include "MemTrack.h"
 #include <stdio.h>
 
 
 int main(void){
 
-    int *array = s_malloc(sizeof(int) * 10);
-    char *string = s_strdup("burger");
+    int *array = t_malloc(sizeof(int) * 10);
 
     array[2] = 1;
 
-    printf("%s\n", string);
 
     if(check_memory_leak())
-        print_allocation();
-    
+        print_tracking_info();
 
-    s_free(array);
+    t_free(&array);
 
-    if(check_memory_leak())
-        print_allocation();
-
-
-    printf("%zu\n", sizeof(Mem_Info));
-    
-
-
+    free_tracking_info();
 
     return 0;
 }
