@@ -2,9 +2,10 @@
 #include <string.h>
 #include <stdio.h>
 #include "MemTrack_linked_list.h"
+#include "MemTrack_export.h"
 
 
-void safe_free(void **mem){
+MemTrack_API void safe_free(void **mem){
 
     if(!(*mem))
         return;
@@ -14,7 +15,7 @@ void safe_free(void **mem){
 
 }
 
-void debug_free(void **mem, char *file, int line){
+MemTrack_API void debug_free(void **mem, char *file, int line){
 
     if(!file){
         printf("MemTrack ERROR: debug_free doesn't accept 'NULL' into 'char *file'\n");
@@ -34,7 +35,7 @@ void debug_free(void **mem, char *file, int line){
 }
 
 
-void* debug_malloc(size_t size, char *file, int line){
+MemTrack_API void* debug_malloc(size_t size, char *file, int line){
 
     if(!file){
         printf("MemTrack ERROR: debug_free doesn't accept 'NULL' into 'char *file'\n");
@@ -57,7 +58,7 @@ void* debug_malloc(size_t size, char *file, int line){
 }
 
 
-void* debug_realloc(void *mem, size_t size, char *file, int line){
+MemTrack_API void* debug_realloc(void *mem, size_t size, char *file, int line){
 
     if(!file){
         printf("MemTrack ERROR: debug_free doesn't accept 'NULL' into 'char *file'\n");
@@ -90,7 +91,7 @@ void* debug_realloc(void *mem, size_t size, char *file, int line){
     return new_mem;
 }
 
-char* debug_strdup(const char* src, char *file, int line){
+MemTrack_API char* debug_strdup(const char* src, char *file, int line){
 
     if(!file){
         printf("MemTrack ERROR: debug_free doesn't accept 'NULL' into 'char *file'\n");

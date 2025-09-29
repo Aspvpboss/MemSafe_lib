@@ -8,7 +8,7 @@ static Mem_Info *head = NULL;
 static Mem_Info *tail = NULL;
 
 
-void free_tracking_info(){
+MemTrack_API void free_tracking_info(){
     Mem_Info *current = head;
     Mem_Info *next = NULL;
 
@@ -25,7 +25,7 @@ void free_tracking_info(){
 
 
 
-size_t check_memory_usage(){
+MemTrack_API size_t check_memory_usage(){
     Mem_Info *current = head;
     size_t total = 0;
 
@@ -38,7 +38,7 @@ size_t check_memory_usage(){
 }
 
 
-int check_memory_leak(){
+MemTrack_API int check_memory_leak(){
 
     if(head || tail)
         return 1;
@@ -48,7 +48,7 @@ int check_memory_leak(){
 
 
 
-void print_tracking_info(){
+MemTrack_API void print_tracking_info(){
 
     Mem_Info *current = head;
 
@@ -62,7 +62,7 @@ void print_tracking_info(){
 }
 
 
-int append_allocation(void *ptr, char *file, int line, size_t size){
+MemTrack_API int append_allocation(void *ptr, char *file, int line, size_t size){
     Mem_Info *node = malloc(sizeof(Mem_Info));
     if(!node)
         return 1;
@@ -91,7 +91,7 @@ int append_allocation(void *ptr, char *file, int line, size_t size){
 }
 
 
-int delete_allocation(void *check_ptr){
+MemTrack_API int delete_allocation(void *check_ptr){
     Mem_Info *current = head;
     Mem_Info *prev = NULL;
 

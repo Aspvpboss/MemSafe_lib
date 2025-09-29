@@ -1,7 +1,5 @@
-
-
-#ifndef MEMSAFE_H
-#define MEMSAFE_H
+#ifndef MEMTRACK_H
+#define MEMTRACK_H
 
 #include "MemTrack_export.h"
 #include "MemTrack_linked_list.h"
@@ -9,11 +7,11 @@
 #include <stdlib.h>
 
 
-MemSafe_API void safe_free(void **mem);
-MemSafe_API void debug_free(void **mem, char *file, int line);
-MemSafe_API void* debug_malloc(size_t size, char *file, int line);
-MemSafe_API void* debug_realloc(void *mem, size_t size, char *file, int line);
-MemSafe_API char* debug_strdup(const char* src, char *file, int line);
+MemTrack_API void safe_free(void **mem);
+MemTrack_API void debug_free(void **mem, char *file, int line);
+MemTrack_API void* debug_malloc(size_t size, char *file, int line);
+MemTrack_API void* debug_realloc(void *mem, size_t size, char *file, int line);
+MemTrack_API char* debug_strdup(const char* src, char *file, int line);
 
 
 #ifdef TRACK_ALLOCATIONS
@@ -28,7 +26,7 @@ MemSafe_API char* debug_strdup(const char* src, char *file, int line);
     void t_free(void **mem);
     auto NULL's pointer
     */
-    #define t_free(ptr) debug_free((void**)ptr, __FILE__, __LINE__)
+    #define t_free(ptr) debug_free((void**)&ptr, __FILE__, __LINE__)
 
     //char *t_strdup(char *str);
     #define t_strdup(str) debug_strdup(str, __FILE__, __LINE__)
@@ -45,7 +43,7 @@ MemSafe_API char* debug_strdup(const char* src, char *file, int line);
     void t_free(void **mem);
     auto NULL's pointer
     */
-    #define t_free(ptr) safe_free((void**)ptr)
+    #define t_free(ptr) safe_free((void**)&ptr)
 
     //char *t_strdup(char *str);
     #define t_strdup(str)  strdup(str)
